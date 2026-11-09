@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кофейня AROMA</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <h1>☕ Кофейня AROMA</h1>
+        <nav id="main-nav">
+            <a href="index.html">Меню</a>
+            <a href="blog.html">Блог</a>
+            <a href="admin.html" id="nav-admin" style="display:none">Админ</a>
+            <span id="nav-user"></span>
+            <a href="login.html" id="nav-login">Войти</a>
+            <a href="#" id="nav-logout" style="display:none">Выйти</a>
+        </nav>
+    </header>
+
+    <div class="app-container">
+        <section class="catalog">
+            <h2>Меню Кофейни</h2>
+            <div id="products-grid" class="grid"></div>
+        </section>
+        <section class="order-zone">
+            <h2>Ваш стаканчик кофе</h2>
+            <div class="stickers-panel">
+                <span class="sticker" draggable="true" data-sticker="Без сахара">🍬 Без сахара</span>
+                <span class="sticker" draggable="true" data-sticker="С собой">🎒 С собой</span>
+                <span class="sticker" draggable="true" data-sticker="Двойной эспрессо">☕️ Крепче</span>
+            </div>
+            <div id="coffee-cup-dropzone" class="cup-dropzone">
+                <div class="cup-visual">🥤</div>
+                <p>Перетащите сюда стикеры пожеланий</p>
+                <div id="applied-stickers-container"></div>
+            </div>
+
+            <div id="cart-list"></div>
+
+            <div class="cart-total">
+                <h3>Итого: <span id="total-price">0</span> ₽</h3>
+                <button id="checkout-btn">Оформить заказ</button>
+            </div>
+            <div id="receipt-area"></div>
+        </section>
+    </div>
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Мои заказы | AROMA</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <h1>☕ Кофейня AROMA</h1>
+        <nav id="main-nav">
+            <a href="index.html">Меню</a>
+            <a href="blog.html">Блог</a>
+            <a href="my-orders.html">Мои заказы</a>
+            <a href="admin.html" id="nav-admin" style="display:none">Админ</a>
+            <span id="nav-user"></span>
+            <a href="login.html" id="nav-login">Войти</a>
+            <a href="#" id="nav-logout" style="display:none">Выйти</a>
+        </nav>
+    </header>
+    <main class="page-container">
+        <h2>Мои заказы</h2>
+        <div id="orders-list"></div>
+    </main>
+    <script src="js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!API.user) { location.href = 'login.html'; return; }
+            const list = document.getElementById('orders-list');
+            try {
+                const orders = await API.get('/orders/my');
+                if (!orders.length) { list.innerHTML = '<p>У вас пока нет заказов</p>'; return; }
+                list.innerHTML = orders.map(o => `
+                    <div class="blog-post">
+                        <h3>Заказ #${o.id} · ${o.receiptNumber}</h3>
+                        <p class="meta">${new Date(o.createdAt).toLocaleString('ru-RU')} · Статус: <b>${o.status}</b></p>
+                        <ul>
+                            ${o.items.map(i => `<li>${i.product?.title ?? 'Товар'} × ${i.quantity} = ${(i.price * i.quantity).toFixed(2)} ₽</li>`).join('')}
+                        </ul>
+                        ${o.appliedStickers ? `<p><small>Пожелания: ${o.appliedStickers}</small></p>` : ''}
+                        <p><strong>Итого: ${o.totalPrice.toFixed(2)} ₽</strong></p>
+                        <button data-receipt="${o.id}" class="add-btn">🧾 Чек</button>
+                    </div>
+                `).join('');
+                list.querySelectorAll('[data-receipt]').forEach(btn => btn.onclick = async () => {
+                    const text = await API.get(`/orders/${btn.dataset.receipt}/receipt`);
+                    const w = window.open('', '_blank');
+                    w.document.write(`<pre style="font-family:monospace;padding:20px">${text.replace(/</g,'&lt;')}</pre>`);
+                });
+            } catch (e) { list.innerHTML = `<p class="error">${e.message}</p>`; }
+        });
+    </script>
+</body>
+</html>
